@@ -13,6 +13,8 @@ import {
 } from "@clerk/nextjs";
 
 import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/ModeToggle";
+
 
 const Navbar = () => {
   return (
@@ -21,53 +23,58 @@ const Navbar = () => {
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/v.svg"
-            alt="v0"
-            width={32}
-            height={32}
-          />
-
-          
+         <Image
+  src="/v.svg"
+  alt="v0"
+  width={32}
+  height={32}
+  className="dark:invert"
+/>
         </Link>
 
- <ClerkLoading>
-  <div className="flex items-center gap-2">
-    
-    <div className="h-9 w-20 animate-pulse rounded-md border border-gray-300 bg-gray-200" />
+        <div className="flex items-center gap-3">
 
-    <div className="h-9 w-20 animate-pulse rounded-md bg-gray-300" />
+         <ModeToggle/>
 
-  </div>
-</ClerkLoading>
-
-        <ClerkLoaded>
-
-          {/* Signed Out */}
-          <Show when="signed-out">
+          <ClerkLoading>
             <div className="flex items-center gap-2">
+              
+              <div className="h-9 w-20 animate-pulse rounded-md border border-gray-300 bg-gray-200" />
 
-              <SignInButton mode="modal">
-                <Button variant="outline" size="sm">
-                  Sign In
-                </Button>
-              </SignInButton>
-
-              <SignUpButton mode="modal">
-                <Button size="sm">
-                  Sign Up
-                </Button>
-              </SignUpButton>
+              <div className="h-9 w-20 animate-pulse rounded-md bg-gray-300" />
 
             </div>
-          </Show>
+          </ClerkLoading>
 
-          {/* Signed In */}
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
+          <ClerkLoaded>
 
-        </ClerkLoaded>
+            {/* Signed Out */}
+            <Show when="signed-out">
+              <div className="flex items-center gap-2">
+
+                <SignInButton mode="modal">
+                  <Button variant="outline" size="sm">
+                    Sign In
+                  </Button>
+                </SignInButton>
+
+                <SignUpButton mode="modal">
+                  <Button size="sm">
+                    Sign Up
+                  </Button>
+                </SignUpButton>
+
+              </div>
+            </Show>
+
+            {/* Signed In */}
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
+
+          </ClerkLoaded>
+
+        </div>
 
       </div>
     </nav>
