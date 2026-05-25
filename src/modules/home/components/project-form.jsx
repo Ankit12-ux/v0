@@ -193,21 +193,20 @@ const ProjectsForm = () => {
               </kbd>
               &nbsp; to submit
             </div>
-
-            <Button
-              className={cn(
-                "size-8 rounded-full",
-                isButtonDisabled && "bg-muted-foreground border"
-              )}
-              disabled={isButtonDisabled}
-              type="submit"
-            >
-              {isPending ? (
-                <Spinner />
-              ) : (
-                <ArrowUpIcon className="size-4" />
-              )}
-            </Button>
+<Button
+  className={cn(
+    "size-8 rounded-full bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90",
+    isButtonDisabled && "opacity-50"
+  )}
+  disabled={isButtonDisabled}
+  type="submit"
+>
+  {isPending ? (
+    <Spinner />
+  ) : (
+    <ArrowUpIcon className="size-4" />
+  )}
+</Button>
           </div>
         </form>
       </Form>
