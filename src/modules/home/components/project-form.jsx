@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 
 import { cn } from "@/lib/utils";
+import { onInvoke } from "../actions";
 
 // import { onInvoke } from "../actions";
 
@@ -113,9 +114,23 @@ const ProjectsForm = () => {
     }
   };
 
+  const onInvokeAI=async()=>{
+    try{
+      const res=await onInvoke()
+      console.log(res)
+      toast.success("Done")
+    }catch(error){
+      console.log(error)
+    }
+  }
+
   return (
     <div className="space-y-8">
       {/* Template Grid */}
+
+      <Button onClick={onInvokeAI} >
+        Invoke Ai Agent
+      </Button>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {PROJECT_TEMPLATES.map((template, index) => (
