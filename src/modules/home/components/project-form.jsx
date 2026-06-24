@@ -18,6 +18,7 @@ import { Form, FormField } from "@/components/ui/form";
 
 import { cn } from "@/lib/utils";
 import { onInvoke } from "../actions";
+import { useCreateProject } from "@/modules/projects/hooks/project";
 
 // import { onInvoke } from "../actions";
 
@@ -83,8 +84,9 @@ const ProjectsForm = () => {
   const [isFocused, setIsFocused] = useState(false);
 
   const router = useRouter();
+  const{mutateAsync,isPending}=useCreateProject()
 
-  const isPending = false;
+  //const isPending = false;
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -94,8 +96,6 @@ const ProjectsForm = () => {
     mode: "onChange",
   });
 
-  const isButtonDisabled =
-    !form.formState.isValid || form.formState.isSubmitting;
 
   const handleTemplate = (prompt) => {
     form.setValue("content", prompt);
@@ -105,32 +105,35 @@ const ProjectsForm = () => {
     try {
       console.log(values);
 
-      // const res = await mutateAsync(values.content)
-      // router.push(`/projects/${res.id}`)
-      // toast.success("Project created successfully")
-      // form.reset()
+      const res = await mutateAsync(values.content)
+      router.push(`/projects/${res.id}`)
+      toast.success("Project created successfully")
+      form.reset()
     } catch (error) {
       toast.error(error.message || "Failed to create project");
     }
   };
 
-  const onInvokeAI=async()=>{
-    try{
-      const res=await onInvoke()
-      console.log(res)
-      toast.success("Done")
-    }catch(error){
-      console.log(error)
-    }
-  }
+  // const onInvokeAI=async()=>{
+  //   try{
+  //     const res=await onInvoke()
+  //     console.log(res)
+  //     toast.success("Done")
+  //   }catch(error){
+  //     console.log(error)
+  //   }
+  // }
+
+  const isButtonDisabled=isPending ||!form.watch("content").trim()
+  
 
   return (
     <div className="space-y-8">
       {/* Template Grid */}
 
-      <Button onClick={onInvokeAI} >
+      {/* <Button onClick={onInvokeAI} >
         Invoke Ai Agent
-      </Button>
+      </Button> */}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {PROJECT_TEMPLATES.map((template, index) => (
