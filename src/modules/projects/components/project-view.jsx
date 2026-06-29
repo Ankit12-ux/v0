@@ -12,8 +12,12 @@ import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import React from 'react'
 import ProjectHeader from "./project-header";
+import MessageContainer from "./message-container";
+
 
 const ProjectView = ({projectId}) => {
+
+  const [activeFragment,setActiveFragment]=useState(null);
   return (
     <div className="h-screen">
         <ResizablePanelGroup direction="horizontal">
@@ -23,7 +27,11 @@ const ProjectView = ({projectId}) => {
             className="flex flex-col min-h-0"
             >
                  <ProjectHeader projectId={projectId} />
-                {/* todo */}
+                    <MessageContainer
+            projectId={projectId}
+            activeFragment={activeFragment}
+            setActiveFragment={setActiveFragment}
+          />
                 
             </ResizablePanel>
             <ResizableHandle withHandle />
