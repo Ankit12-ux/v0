@@ -3,7 +3,7 @@ import { gemini, createAgent, createTool, createNetwork } from "@inngest/agent-k
 import Sandbox from "@e2b/code-interpreter";
 import { step } from "inngest";
 import z from "zod";
-import { PROMPT } from "@/prompt";
+import { FRAGMENT_TITLE_PROMPT, PROMPT, RESPONSE_PROMPT } from "@/prompt";
 import { lastAssistantTextMessageContent } from "./utils";
 import db from "@/lib/db";
 import { MessageRole, MessageType } from "@prisma/client";
@@ -176,6 +176,54 @@ export const codeAgentFunction = inngest.createFunction(
 
 
     const result = await network.run(event.data.value);
+    
+    
+    const fragmentTitleGenerator = createAgent({
+      name:"fragment-title-generator",
+      description:"Generate a title for the fragment",
+      system:FRAGMENT_TITLE_PROMPT,
+      model:gemini({model:"gemini-2.5-flash"})
+    })
+
+    const responseGenerator = createAgent({
+      name:"response-generator",
+      description:"Generate a response for the fragment",
+      system:RESPONSE_PROMPT,
+      model:gemini
+      ({model:"gemini-2.5-flash"})
+    })
+
+    
+    const {output:fragmentTitleOutput} = await fragmentTitleGenerator.run(result.state.data.summary)
+    const {output:responseOutput} = await responseGenerator.run(
+      result.state.data.summary
+    )
+
+     const generateFragmentTitle = ()=>{
+      if(fragmentTitleOutput[0].type !=="text"){
+        return "Untitled"
+      }
+
+      if(Array.isArray(fragmentTitleOutput[0].content)){
+            return fragmentTitleOutput[0].content.map((c) => c).join("");
+      }
+      else{
+        return fragmentTitleOutput[0].content
+      }
+    }
+
+      const generateResponse = ()=>{
+       if (responseOutput[0].type !== "text") {
+        return "Here you go";
+      }
+
+      if (Array.isArray(responseOutput[0].content)) {
+        return responseOutput[0].content.map((c) => c).join("");
+      } else {
+        return responseOutput[0].content;
+      }
+    }
+
 
     const isError =
       !result.state.data.summary ||
@@ -203,7 +251,7 @@ await step.run("save-result",async()=>{
   return await db.message.create({
     data:{
       projectId:event.data.projectId,
-      content:result.state.data.summary,
+      content:generateResponse(),
       role:MessageRole.ASSISTANT,
       type:MessageType.RESULT,
       fragments:{
