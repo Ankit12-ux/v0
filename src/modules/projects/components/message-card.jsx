@@ -5,6 +5,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ChevronRightIcon, Code2Icon } from "lucide-react";
+import { Response } from "@/components/ai-elements/response";
 
 
 
@@ -81,8 +82,8 @@ const AssistantMessage = ({
       </div>
 
       <div className="pl-8.5 flex flex-col gap-y-4">
-        {/* <Response>{content}</Response> */}
-        <span>{content}</span>
+        <Response>{content}</Response> 
+        
         {fragment && type === MessageType.RESULT && (
           <FragmentCard
             fragment={fragment}
